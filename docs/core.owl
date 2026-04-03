@@ -11,7 +11,8 @@
      xmlns:xml="http://www.w3.org/XML/1998/namespace"
      xmlns:xsd="http://www.w3.org/2001/XMLSchema#"
      xmlns:cdm1="https://w3id.org/citydata/part1/v1/"
-     xmlns:cdm2="https://w3id.org/citydata/part2/v1/">
+     xmlns:cdm2="https://w3id.org/citydata/part2/v1/"
+     xmlns:its-core="https://w3id.org/itsdata/core/v1/">
     <owl:Ontology rdf:about="https://w3id.org/itsdata/core/v1/">
         <!-- Identity -->
 		<dcterms:title>ITS Core Ontology</dcterms:title>
@@ -19,6 +20,7 @@
     	<vann:preferredNamespaceUri>https://w3id.org/itsdata/itsCore/</vann:preferredNamespaceUri>
 		<vann:preferredNamespacePrefix>itsCore</vann:preferredNamespacePrefix>
         <cdm1:mainModule>true</cdm1:mainModule>
+        <its-core:draft>true</its-core:draft>
     		
     	<!-- Provenance -->
     	<dcterms:creator>Kenneth Vaughn</dcterms:creator>
@@ -36,13 +38,40 @@
         <dcterms:license>http://creativecommons.org/licenses/by/4.0/</dcterms:license>
         
         <!-- Imports -->
-        <owl:imports rdf:resource="https://w3id.org/citydata/part2/v1/CityPattern.owl"/>
+        <owl:imports rdf:resource="https://w3id.org/citydata/part2/v1/CityPattern/"/>
+        <!-- which includes the following cascade of imports:
+            LandUsePattern
+                CodePattern
+                    Core(cdm2)
+                    OrganizationStructurePattern
+                        AgentPattern
+                            GenericPropertiesPattern
+                            ResourcePattern
+                                ActivityPattern
+                                    ChangePattern
+                                    SpatialLocPattern
+                                        MereologyPattern
+                                CityUnitsPattern
+                                    ISO21972
+                                    Core (cdm1)
+                                        Time (W3C)
+         -->
     </owl:Ontology>
     
+
     <!-- 
     ///////////////////////////////////////////////////////////////////////////////////////
     //
-    // Object Properties
+    // Datatypes
+    //
+    ///////////////////////////////////////////////////////////////////////////////////////
+     -->
+
+
+    <!-- 
+    ///////////////////////////////////////////////////////////////////////////////////////
+    //
+    // Annotation Properties
     //
     ///////////////////////////////////////////////////////////////////////////////////////
      -->
@@ -69,7 +98,22 @@
     	<skos:definition>An object property to organize all object properties defined in all recognized ITS Ontologies.</skos:definition>
     </owl:ObjectProperty>
     
-<!-- https://w3id.org/itsdata/core/v1/activationStatus -->
+    <!-- https://w3id.org/itsdata/core/v1/jurisdiction -->
+
+    <owl:ObjectProperty rdf:about="https://w3id.org/itsdata/core/v1/jurisdiction">
+        <rdfs:subPropertyOf rdf:resource="https://w3id.org/itsdata/core/v1/ITSObjectProperty"/>
+        <skos:definition>The jurisdiction associated with the object.</skos:definition>
+        <rdfs:range rdf:resource="https://w3id.org/citydata/part2/v1/JurisdictionalArea"/>
+    </owl:ObjectProperty>
+    
+
+    <!-- https://w3id.org/itsdata/core/v1/activationStatus -->
+
+    <owl:ObjectProperty rdf:about="https://w3id.org/itsdata/core/v1/activationStatus">
+        <skos:definition>The activation status of the object.</skos:definition>
+        <rdfs:subPropertyOf rdf:resource="https://w3id.org/itsdata/core/v1/ITSObjectProperty"/>
+        <rdfs:range rdf:resource="https://w3id.org/itsdata/core/v1/ActivationStatusCode"/>
+    </owl:ObjectProperty>
 
     <!-- 
     ///////////////////////////////////////////////////////////////////////////////////////
@@ -85,14 +129,23 @@
     	<skos:definition>A datatype property to organize all datatype properties defined in all recognized ITS Ontologies.</skos:definition>
     </owl:DatatypeProperty>
     
-    <!-- https://w3id.org/itsdata/core/v1/jurisdiction -->
+    <!-- https://w3id.org/itsdata/core/v1/image -->
 
-    <owl:DatatypeProperty rdf:about="https://w3id.org/itsdata/core/v1/jurisdiction">
-        <rdfs:subPropertyOf rdf:resource="https://w3id.org/itsdata/core/v1/ITSDataProperty"/>
-        <skos:definition>The jurisdiction associated with the object.</skos:definition>
-        <rdfs:range rdf:resource="https://w3id.org/citydata/part2/v1/JurisdictionalArea"/>
-    </owl:DatatypeProperty>
-    
+    <owl:DatatypeProperty rdf:about="https://w3id.org/itsdata/core/v1/image">
+        <skos:definition>The binary content of an image embedded as base64-encoded bytes.</skos:definition>
+        <rdfs:subPropertyOf rdf:resource="https://w3id.org/itsdata/core/v1/ITSObjectProperty"/>
+        <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#base64Binary"/>
+  </owl:DatatypeProperty>
+  
+
+    <!-- https://w3id.org/itsdata/core/v1/url -->
+
+    <owl:DatatypeProperty rdf:about="https://w3id.org/itsdata/core/v1/url">
+        <skos:definition>The URL associated with the object.</skos:definition>
+        <rdfs:subPropertyOf rdf:resource="https://w3id.org/itsdata/core/v1/ITSObjectProperty"/>
+        <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#anyURI"/>
+  </owl:DatatypeProperty>
+  
 
     <!-- https://w3id.org/itsdata/core/v1/version -->
 
@@ -110,10 +163,17 @@
     ///////////////////////////////////////////////////////////////////////////////////////
      -->
 
-    <owl:Class rdf:about="https://w3id.org/itsdata/core/v1/ITSClass">
+    <owl:Class rdf:about="https://w3id.org/itsdata/core/v1/ITSThing">
     	<skos:definition>A class to organize all classes defined in all recognized ITS Ontologies.</skos:definition>
     </owl:Class>
     
+    <!-- https://w3id.org/itsdata/core/v1/ActivationStatusCode -->
+    <owl:Class rdf:about="https://w3id.org/itsdata/core/v1/ActivationStatusCode">
+        <skos:definition>A code indicating the activation status of an object</skos:definition>
+        <skos:example>active, beingSetUp, beingShutDown, inactive, scheduled</skos:example>
+        <rdfs:subClassOf rdf:resource="https://w3id.org/itsdata/core/v1/ITSThing"/>
+        <rdfs:subClassOf rdf:resource="https://w3id.org/citydata/part2/v1/Code"/>
+    </owl:Class>
 
 
 </rdf:RDF>

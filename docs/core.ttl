@@ -1,0 +1,89 @@
+BASE   <https://w3id.org/itsdata/core/v1/>
+PREFIX dcterms: <http://purl.org/dc/terms/>
+PREFIX owl: <http://www.w3.org/2002/07/owl#>
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
+PREFIX vann: <http://purl.org/vocab/vann/>
+PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
+PREFIX cdm2: <https://w3id.org/citydata/part2/v1/>
+PREFIX its-core: <https://w3id.org/itsdata/core/v1/>
+
+its-core: a owl:Ontology;
+    # Ontology metadata
+    dcterms:title                  "ITS Core Ontology"@en;
+    skos:definition                "This ontology defines core concepts related to intelligent transport systems (ITS)."@en;
+    vann:preferredNamespaceUri     "https://w3id.org/itsdata/core/";
+    vann:preferredNamespacePrefix  "its-core";
+    dcterms:license                "http://creativecommons.org/licenses/by/4.0/";
+    its-core:draft                 "true";
+    
+    #Provenance metadata
+    dcterms:creator                "Kenneth Vaughn";
+    dcterms:created                "Draft";
+    dcterms:modified               "2026-03-03"^^xsd:date;
+    owl:versionInfo                "0.0.2";
+    owl:versionIRI                 its-core:r0.2;
+    owl:priorVersion               its-core:r0.1;
+    
+    # Imports
+    owl:imports                    cdm2:CityPattern .
+    # which includes the following cascade of imports:
+    #     LandUsePattern
+    #         CodePattern
+    #             Core(cdm2)
+    #             OrganizationStructurePattern
+    #                 AgentPattern
+    #                    GenericPropertiesPattern
+    #                    ResourcePattern
+    #                        ActivityPattern
+    #                            ChangePattern
+    #                            SpatialLocPattern
+    #                                MereologyPattern
+    #                        CityUnitsPattern
+    #                             ISO21972
+    #                             Core (cdm1)
+    #                                 Time (W3C)
+
+
+# Object properties
+its-core:ITSObjectProperty a owl:ObjectProperty;
+    skos:definition  "An object property to organize all object properties defined in all recognized ITS Ontologies." .
+
+its-core:jurisdiction a owl:ObjectProperty;
+    rdfs:subPropertyOf  its-core:ITSObjectProperty;
+    skos:definition     "The jurisdiction associated with the object.";
+    rdfs:range          cdm2:JurisdictionalArea .
+
+its-core:activationStatus a owl:ObjectProperty;
+    skos:definition     "The activation status of the object.";
+    rdfs:subPropertyOf  its-core:ITSObjectProperty;
+    rdfs:range          its-core:ActivationStatusCode .
+
+# Datatype properties
+its-core:ITSDataProperty a owl:DataProperty;
+    skos:definition  "A datatype property to organize all datatype properties defined in all recognized ITS Ontologies." .
+
+its-core:image a owl:DataProperty;
+    skos:definition     "The binary content of an image embedded as base64-encoded bytes.";
+    rdfs:subPropertyOf  its-core:ITSDataProperty;
+    rdfs:range          xsd:base64Binary .
+
+its-core:url a owl:DataProperty;
+    skos:definition     "The URL associated with the object.";
+    rdfs:subPropertyOf  its-core:ITSDataProperty;
+    rdfs:range          xsd:anyURI .
+
+its-core:version a owl:DataProperty;
+    rdfs:subPropertyOf  its-core:ITSDataProperty;
+    skos:definition     "The version of the object." .
+
+# Classes
+its-core:ITSThing a owl:Class;
+    skos:definition  "A class to organize all classes defined in all recognized ITS Ontologies." .
+
+its-core:ActivationStatusCode a owl:Class;
+    skos:definition  "A code indicating the activation status of an object";
+    skos:example     "active, beingSetUp, beingShutDown, inactive, scheduled";
+    rdfs:subClassOf  its-core:ITSThing;
+    rdfs:subClassOf  cdm2:Code .
